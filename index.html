@@ -139,6 +139,15 @@ body.game-fullscreen .game-screen{height:100svh}
  .dice-dock button{min-height:34px;padding:5px 10px}
 }
 
+
+/* MMORPG-inspired illustrated world dressing */
+.board-column{background:#0b1425}
+#bd{background:radial-gradient(ellipse at 50% 45%,#243c59 0%,#111a31 68%,#090d1b 100%)}
+#bs svg{filter:drop-shadow(0 12px 22px #0005)}
+.game-rail .panel{border-image:linear-gradient(135deg,#35d0c0,#d4a62a,#ff3d8b) 1;border-radius:14px}
+.dice-dock{outline:1px solid #ffd16635}
+@media(prefers-reduced-motion:no-preference){#bs svg circle[fill="#35d0c0"]{filter:drop-shadow(0 0 4px #35d0c0)}}
+
 </style></head><body><main id="app"></main>
 <script>
 const COLORS=["#ff3d8b","#35d0c0","#d4a62a","#8f7bff","#ff8a3d","#6bd96b","#4aa3ff","#f2f2a0","#ff6b6b","#c58aff"];
@@ -447,11 +456,47 @@ function tile(x,y,ty,act){
  if(act)o+=`<polygon points="${x},${y-18} ${x+34},${y} ${x},${y+18} ${x-34},${y}" fill="none" stroke="#fff" stroke-width="3"><animate attributeName="opacity" values="1;.2;1" dur="1s" repeatCount="indefinite"/></polygon>`;
  return o}
 function pawn(x,y,c){return `<g class="tok"><ellipse cx="${x}" cy="${y+3}" rx="8" ry="4" fill="#000" opacity=".4"/><path d="M${x-6} ${y+2}Q${x-6} ${y-9} ${x} ${y-13}Q${x+6} ${y-9} ${x+6} ${y+2}Z" fill="${c}" stroke="#1b1530" stroke-width="1.5"/><circle cx="${x}" cy="${y-17}" r="5" fill="${c}" stroke="#1b1530" stroke-width="1.5"/></g>`}
+function ornateScenery(k){
+ const out=[];
+ // Deep atmospheric sky: stars, distant spires, cloud banks and fine architectural silhouettes.
+ for(let i=0;i<54;i++){
+  const x=(i*71+17)%334+3, y=(i*43+31)%485+20, r=i%9===0?2.1:(i%3===0?1.25:.7);
+  out.push(`<circle cx="${x}" cy="${y}" r="${r}" fill="${i%5===0?'#ffd982':'#d6f8ff'}" opacity="${i%4===0?.85:.42}">${i%7===0?`<animate attributeName="opacity" values=".25;.95;.25" dur="${2+i%4}s" repeatCount="indefinite"/>`:''}</circle>`);
+ }
+ // Layered skyline silhouettes with illuminated windows and roof finials.
+ for(let side=0;side<2;side++){
+  for(let i=0;i<5;i++){
+   const x=side?244+i*19:2+i*19, w=12+(i%3)*5, h=58+((i*37+k*19)%104), y=390-h;
+   const c=['#0b1729','#122238','#17283d'][(i+k)%3];
+   out.push(`<g opacity=".86"><path d="M${x} 430V${y+12}l${w/2} -${12+(i%2)*8}l${w/2} ${12+(i%2)*8}V430Z" fill="${c}" stroke="#7dcbd2" stroke-opacity=".13"/><path d="M${x+w/2} ${y+12}v-18l${w/2} 18" fill="none" stroke="#d4a62a" stroke-opacity=".42" stroke-width="1.2"/>`);
+   for(let wy=y+27;wy<420;wy+=17)for(let wx=x+3;wx<x+w-2;wx+=7){if(((wx+wy+i*3)%4)!==0)out.push(`<rect x="${wx}" y="${wy}" width="2.6" height="5" rx=".5" fill="${(i+wy)%3===0?'#35d0c0':'#ffd166'}" opacity=".${4+((i+wy)%5)}"/>`)}
+   out.push(`</g>`);
+  }
+ }
+ // Suspended bridges and copper cables frame the route without obscuring the tiles.
+ out.push(`<g fill="none" stroke-linecap="round"><path d="M0 125Q54 164 108 126T216 128T340 120" stroke="#d4a62a" stroke-width="2" opacity=".45"/><path d="M0 130Q54 169 108 131T216 133T340 125" stroke="#35d0c0" stroke-width=".8" stroke-dasharray="3 5" opacity=".55"/><path d="M0 455Q48 420 98 454T196 455T340 440" stroke="#d4a62a" stroke-width="2" opacity=".35"/></g>`);
+ // Zone-specific landmarks.
+ if(k===0){
+  out.push(`<g transform="translate(244 96)" opacity=".9"><path d="M-45 8L-22-2L20-2L42 8L20 17L-22 17Z" fill="#b68b43" stroke="#f4d27d"/><path d="M-20 0V-15L0-28L20-15V0" fill="#31556b" stroke="#6cc9d9"/><path d="M0-28V0M-20-15H20" stroke="#ffd166" stroke-width="2"/><path d="M-33 9v18M32 9v18" stroke="#35d0c0" stroke-width="2"/><circle cx="0" cy="-12" r="4" fill="#ff3d8b"><animate attributeName="opacity" values=".4;1;.4" dur="2s" repeatCount="indefinite"/></circle></g><path d="M16 348q-12 30 0 62t0 50" stroke="#63d7e9" stroke-width="4" opacity=".55" fill="none"/>`);
+ }else if(k===1){
+  out.push(`<g transform="translate(80 96)" opacity=".85"><circle r="28" fill="#d4a62a" opacity=".08"/><circle r="21" fill="none" stroke="#d4a62a" stroke-width="3"/><circle r="14" fill="none" stroke="#35d0c0" stroke-width="1.5" stroke-dasharray="4 4"/><path d="M-36 0H36M0-36V36M-25-25L25 25M25-25L-25 25" stroke="#d4a62a" stroke-width="1.5"/><circle r="5" fill="#ff3d8b"/></g><path d="M264 180v-42l16-15 16 15v42z" fill="#633e29" stroke="#d4a62a" stroke-width="2"/><path d="M270 180v-38h20v38" fill="#17283d"/><path d="M273 151h4v8h-4m7-8h4v8h-4" fill="#ffd166"/>`);
+ }else if(k===2){
+  out.push(`<g transform="translate(76 103)" opacity=".9"><path d="M-40 5L0-28L40 5L0 19Z" fill="#6e2570" stroke="#ff8ad4" stroke-width="2"/><path d="M-27 5V35L0 48L27 35V5L0 19Z" fill="#301342" stroke="#a23c9c" stroke-width="2"/><path d="M0-28V19M-40 5L0 48L40 5" stroke="#ffb7f0" stroke-width="1.5"/><circle r="8" fill="#35d0c0"><animate attributeName="r" values="6;10;6" dur="2.2s" repeatCount="indefinite"/></circle></g><path d="M252 110q-24-20-42 0t-42 0" fill="none" stroke="#ff3d8b" stroke-width="3" opacity=".6"/>`);
+ }else{
+  out.push(`<g transform="translate(258 106)" opacity=".9"><path d="M0-43L10-8L37 0L10 8L0 43L-10 8L-37 0L-10-8Z" fill="#8f86d9" stroke="#e5dfff" stroke-width="1.5"/><circle r="10" fill="#35d0c0" opacity=".8"><animate attributeName="r" values="7;12;7" dur="2s" repeatCount="indefinite"/></circle><circle r="22" fill="none" stroke="#d4a62a" stroke-width="1.5" stroke-dasharray="3 5"><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite"/></circle></g><path d="M25 170l15-22 15 22v27H25Z" fill="#242044" stroke="#8f86d9" stroke-width="2"/><path d="M32 197v-20h16v20" fill="#35d0c0" opacity=".65"/>`);
+ }
+ // Tiny floating rune fragments and drifting motes.
+ for(let i=0;i<12;i++){
+  const x=(i*97+35)%320+10,y=(i*61+70)%430+60;
+  out.push(`<path d="M${x} ${y-4}l3 4-3 4-3-4Z" fill="none" stroke="${i%2?'#35d0c0':'#ffd166'}" stroke-width="1" opacity=".5"><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur="${3+i%3}s" repeatCount="indefinite"/></path>`);
+ }
+ return out.join('');
+}
 function boardSvg(){
  const k=V,[lo,hi]=DR(k),n=hi-lo+1,P=PAL[k],S=SKY[k],pts=[];
  let s=`<svg viewBox="0 0 340 560" style="width:100%;height:100%" role="img" aria-label="${NM2[k]} map"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S[0]}"/><stop offset="1" stop-color="${S[1]}"/></linearGradient></defs><rect width="340" height="560" fill="url(#sk)"/><g opacity=".4">`;
  for(let i=0;i<8;i++)s+=cub(i*48+10,150+(i*37)%40,14+(i*7)%10,40+(i*53)%60,["#2a3050","#1c2240","#12172c"]);
- s+="</g>"+DECO[k]();
+ s+="</g>"+DECO[k]()+ornateScenery(k);
  for(let i=0;i<4;i++)s+=cub(34,150+i*115,20+(i*5)%8,70+(i*31)%50,P,1)+cub(306,200+i*115,20+(i*3)%8,60+(i*37)%50,P,1);
  for(let j=0;j<n;j++)pts.push(tp(k,j));
  for(let j=1;j<n;j++){const[a,b]=pts[j-1],[c,d]=pts[j];s+=`<line x1="${a}" y1="${b+4}" x2="${c}" y2="${d+4}" stroke="#000" stroke-width="12" stroke-linecap="round" opacity=".4"/><line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#c9a25a" stroke-width="6" stroke-linecap="round"/><line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#35d0c0" stroke-width="1.5" stroke-dasharray="3 4"/>`}
