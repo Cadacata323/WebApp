@@ -80,6 +80,65 @@ body.game-fullscreen .game-brand{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){.pg,.tok{animation:none!important}}
 
+
+/* Immersive map-first layout */
+html,body{width:100%;height:100%;min-height:100%;overflow:hidden}
+body{background:#100b20}
+main,body.game-fullscreen main{width:100%;max-width:none;height:100svh;margin:0;padding:0!important}
+main:has(.game-screen)>.game-screen,.game-screen{position:relative;width:100%;max-width:none;height:100svh;min-height:100svh;margin:0;overflow:hidden}
+.game-topbar{position:absolute;z-index:8;top:calc(env(safe-area-inset-top,0px) + 52px);left:18px;right:18px;margin:0!important;pointer-events:none;align-items:flex-start}
+.game-brand{font-size:clamp(18px,2vw,25px);padding:8px 12px;border:1px solid #d4a62a77;border-radius:14px;background:#1b1530b8;backdrop-filter:blur(12px);text-shadow:0 2px 14px #000}
+.game-actions{pointer-events:auto;gap:7px}
+.game-actions button{min-height:38px;padding:7px 12px;font-size:13px;background:#1b1530c9;backdrop-filter:blur(12px);box-shadow:0 3px 14px #0004}
+.game-layout{display:block;position:absolute;inset:0;min-height:0;margin:0!important;padding:0!important}
+.board-column{position:absolute;inset:0;border:0;border-radius:0;box-shadow:none;background:radial-gradient(ellipse at center,#1d3c56 0%,#10263d 58%,#0b1023 100%);overflow:hidden}
+#bd{position:absolute;inset:0;width:100%;height:100%!important;min-height:0!important;margin:0;padding:0!important;border:0;border-radius:0;background:transparent;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#bs{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+#bs svg{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
+.dice-dock{right:calc(env(safe-area-inset-right,0px) + 20px);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);padding:9px 11px;border-color:#d4a62acc;background:#171128d9;box-shadow:0 8px 30px #0008;backdrop-filter:blur(16px);border-radius:17px}
+.dice-dock .big{font-size:35px}
+.dice-dock button{min-height:44px;padding:9px 17px}
+.game-rail{position:absolute;z-index:7;top:calc(env(safe-area-inset-top,0px) + 64px);right:18px;width:min(300px,30vw);max-height:calc(100svh - 145px);overflow:auto;display:flex;gap:8px;pointer-events:none;scrollbar-width:thin}
+.game-rail>*{pointer-events:auto}
+.game-rail .panel{margin:0;padding:10px 12px;background:#211936c9;border:1px solid #35d0c0b8;border-radius:14px;box-shadow:0 8px 28px #0005;backdrop-filter:blur(16px)}
+.game-rail .active-player h2{font-size:19px;margin-top:6px!important}
+.game-rail .active-player p{font-size:13px;line-height:1.35;margin-top:5px}
+.game-rail .chip{font-size:12px;padding:2px 9px}
+.game-rail .rail-title h2{font-size:18px;margin:0}
+.game-rail .row{gap:5px}
+.game-rail .row[style*="font-size:14px"]{font-size:12px!important;margin:5px 0!important}
+.game-rail .row button{font-size:12px;padding:7px 9px;min-height:34px}
+.game-rail .row:last-child{display:grid;grid-template-columns:1fr 1fr}
+.status-panel{z-index:30}
+body.game-fullscreen .game-screen{height:100svh}
+@media (min-width:701px){
+ .game-rail{width:min(290px,25vw);right:20px}
+}
+@media (max-width:700px){
+ .game-topbar{left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 43px)}
+ .game-brand{font-size:16px;padding:6px 8px}
+ .game-actions{gap:4px}
+ .game-actions button{font-size:11px;padding:5px 7px;min-height:34px}
+ .game-rail{top:auto;right:8px;bottom:76px;width:min(235px,56vw);max-height:45svh;gap:6px}
+ .game-rail .panel{padding:8px}
+ .game-rail .active-player p{font-size:11px}
+ .game-rail .rail-title h2{font-size:15px}
+ .game-rail .row[style*="font-size:14px"]{font-size:10px!important}
+ .dice-dock{right:8px;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);padding:5px 7px;gap:5px}
+ .dice-dock .big{font-size:27px;min-width:32px}
+ .dice-dock button{font-size:13px;padding:7px 10px;min-height:38px}
+}
+@media (orientation:landscape) and (max-height:520px){
+ .game-topbar{top:38px;left:10px;right:10px}
+ .game-brand{font-size:16px;padding:4px 8px}
+ .game-actions button{min-height:30px;padding:4px 8px}
+ .game-rail{top:46px;right:10px;width:245px;max-height:calc(100svh - 100px)}
+ .game-rail .panel{padding:7px 9px}
+ .dice-dock{bottom:8px;right:10px;padding:4px 7px}
+ .dice-dock .big{font-size:26px}
+ .dice-dock button{min-height:34px;padding:5px 10px}
+}
+
 </style></head><body><main id="app"></main>
 <script>
 const COLORS=["#ff3d8b","#35d0c0","#d4a62a","#8f7bff","#ff8a3d","#6bd96b","#4aa3ff","#f2f2a0","#ff6b6b","#c58aff"];
@@ -131,7 +190,7 @@ function start(){
  board();
 }
 function boardSvg(){
- let s=`<svg viewBox="0 0 340 290" role="img" aria-label="Game board"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a1f6e"/><stop offset=".6" stop-color="#2a1a4a"/><stop offset="1" stop-color="#1b1530"/></linearGradient></defs><rect width="340" height="290" rx="10" fill="url(#sk)"/><circle cx="268" cy="38" r="24" fill="#ff3d8b" opacity=".3"/><path d="M0 290V215l20-18v-30h18v22l14-12v38l22-16v-44h16v60l24-30h22v56l20-26h18v-40h20v66l22-24v-20h20v54l20-34h24v90z" fill="#120c22" opacity=".85"/><g transform="translate(55 62)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24s" repeatCount="indefinite"/><circle r="30" fill="none" stroke="#d4a62a" stroke-width="8" stroke-dasharray="7.9 7.9" opacity=".2"/><circle r="22" fill="none" stroke="#d4a62a" stroke-width="3" opacity=".2"/></g></g><g transform="translate(290 235)"><g><animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="32s" repeatCount="indefinite"/><circle r="40" fill="none" stroke="#35d0c0" stroke-width="9" stroke-dasharray="10.4 10.4" opacity=".16"/><circle r="30" fill="none" stroke="#35d0c0" stroke-width="3" opacity=".16"/></g></g>`;
+ let s=`<svg viewBox="0 0 340 580" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Game board"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a1f6e"/><stop offset=".6" stop-color="#2a1a4a"/><stop offset="1" stop-color="#1b1530"/></linearGradient></defs><rect width="340" height="580" rx="10" fill="url(#sk)"/><path d="M0 580V500l28-24v-65h20v50l22-20v-60h20v78l24-24h22v64l24-30h20v-60h20v82l22-24v-40h20v72l20-30h24v111z" fill="#120c22" opacity=".72"/><circle cx="268" cy="38" r="24" fill="#ff3d8b" opacity=".3"/><path d="M0 290V215l20-18v-30h18v22l14-12v38l22-16v-44h16v60l24-30h22v56l20-26h18v-40h20v66l22-24v-20h20v54l20-34h24v90z" fill="#120c22" opacity=".85"/><g transform="translate(55 62)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24s" repeatCount="indefinite"/><circle r="30" fill="none" stroke="#d4a62a" stroke-width="8" stroke-dasharray="7.9 7.9" opacity=".2"/><circle r="22" fill="none" stroke="#d4a62a" stroke-width="3" opacity=".2"/></g></g><g transform="translate(290 235)"><g><animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="32s" repeatCount="indefinite"/><circle r="40" fill="none" stroke="#35d0c0" stroke-width="9" stroke-dasharray="10.4 10.4" opacity=".16"/><circle r="30" fill="none" stroke="#35d0c0" stroke-width="3" opacity=".16"/></g></g>`;
  for(let i=1;i<N;i++){const[a,b]=pos(i-1),[c,d]=pos(i);s+=`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#6b5420" stroke-width="11" stroke-linecap="round"/><line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#35d0c0" stroke-width="2" stroke-dasharray="4 4"/>`}
  for(let i=0;i<N;i++){const[x,y]=pos(i),t=tileType(i),ic=t=="start"?"🏁":t=="spire"?"🗼":TYPES[t].icon;
   s+=`<circle class="${t=="spire"?"glow":t=="sabo"?"sab":""}" cx="${x}" cy="${y}" r="20" fill="${t=="spire"?"#d4a62a":TC[t]||"#2a2147"}" stroke="${t=="spire"||t=="sabo"?"#ff3d8b":"#d4a62a"}" stroke-width="2.5"/><text x="${x}" y="${y+6}" text-anchor="middle" font-size="18">${ic}</text>`}
